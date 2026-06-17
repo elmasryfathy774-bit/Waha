@@ -1,0 +1,244 @@
+[
+  {
+    "id": "fallback-1",
+    "category": "bathroom",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "easy",
+    "title": "اقفل الدش أثناء الصابون",
+    "description": "إغلاق المياه وقت وضع الشامبو أو الصابون يقلل الهدر فوراً في كل حمام.",
+    "savingLabel": "12 لتر/دقيقة",
+    "impactValue": 260,
+    "priority": 260,
+    "tags": [
+      "دش",
+      "حمام",
+      "سريع"
+    ],
+    "icon": "🚿"
+  },
+  {
+    "id": "fallback-2",
+    "category": "leaks",
+    "audience": [
+      "family",
+      "business"
+    ],
+    "effort": "medium",
+    "title": "افحص أي تنقيط تحت الأحواض",
+    "description": "التسريب البسيط يتكبر مع الوقت، وأحياناً يسرّب مئات اللترات من غير ما تحس.",
+    "savingLabel": "حتى 300 لتر/يوم",
+    "impactValue": 320,
+    "priority": 320,
+    "tags": [
+      "تسريب",
+      "صيانة",
+      "تنقيط"
+    ],
+    "icon": "🛠️"
+  },
+  {
+    "id": "fallback-3",
+    "category": "kitchen",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "easy",
+    "title": "اغسل الأطباق في حوض ممتلئ",
+    "description": "استخدم الحوض بدل ترك الحنفية مفتوحة طول الغسيل.",
+    "savingLabel": "50 لتر/غسلة",
+    "impactValue": 180,
+    "priority": 180,
+    "tags": [
+      "مطبخ",
+      "غسيل",
+      "اقتصاد"
+    ],
+    "icon": "🍽️"
+  },
+  {
+    "id": "t4",
+    "category": "kitchen",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "easy",
+    "title": "أوقف الحنفية أثناء غسيل الأطباق",
+    "description": "اغسل الأطباق بالصابون أولاً ثم اشطفها مرة واحدة بدلاً من ترك المياه تجري.",
+    "savingLabel": "حتى 40 لتر/مرة",
+    "impactValue": 280,
+    "priority": 280,
+    "tags": [
+      "مطبخ",
+      "أطباق",
+      "توفير"
+    ],
+    "icon": "🍽️"
+  },
+  {
+    "id": "t5",
+    "category": "bathroom",
+    "audience": [
+      "family",
+      "kids"
+    ],
+    "effort": "easy",
+    "title": "استخدم كوب عند غسيل الأسنان",
+    "description": "إغلاق الحنفية أثناء تنظيف الأسنان يوفر حتى 8 لترات في كل مرة.",
+    "savingLabel": "8 لتر/مرة",
+    "impactValue": 180,
+    "priority": 180,
+    "tags": [
+      "أسنان",
+      "حنفية",
+      "يومي"
+    ],
+    "icon": "🦷"
+  },
+  {
+    "id": "t6",
+    "category": "garden",
+    "audience": [
+      "family",
+      "villa"
+    ],
+    "effort": "medium",
+    "title": "اسقِ النباتات في الصباح الباكر",
+    "description": "الري صباحاً يقلل التبخر ويضمن وصول أكثر المياه للجذور.",
+    "savingLabel": "حتى 30%",
+    "impactValue": 200,
+    "priority": 200,
+    "tags": [
+      "حديقة",
+      "ري",
+      "نباتات"
+    ],
+    "icon": "🌱"
+  },
+  {
+    "id": "t7",
+    "category": "laundry",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "easy",
+    "title": "اجمع الغسيل في حِمل كامل",
+    "description": "تشغيل الغسالة بحمولة كاملة يوفر الماء والكهرباء مقارنةً بتشغيلها نصف فارغة.",
+    "savingLabel": "حتى 50 لتر/دورة",
+    "impactValue": 240,
+    "priority": 240,
+    "tags": [
+      "غسالة",
+      "غسيل",
+      "بيت"
+    ],
+    "icon": "👕"
+  },
+  {
+    "id": "t8",
+    "category": "leaks",
+    "audience": [
+      "family",
+      "business",
+      "apartment"
+    ],
+    "effort": "medium",
+    "title": "افحص عداد المياه ليلاً",
+    "description": "إذا تحرك عداد المياه ليلاً وكل الصنابير مغلقة فهذا دليل على تسريب خفي.",
+    "savingLabel": "يكشف مئات اللترات",
+    "impactValue": 350,
+    "priority": 350,
+    "tags": [
+      "تسريب",
+      "عداد",
+      "فحص"
+    ],
+    "icon": "🔍"
+  },
+  {
+    "id": "t9",
+    "category": "bathroom",
+    "audience": [
+      "family",
+      "apartment",
+      "kids"
+    ],
+    "effort": "easy",
+    "title": "قصّر وقت الاستحمام لـ 5 دقائق",
+    "description": "تقليص دقيقتين من الدش يوفر ما بين 20-25 لتراً يومياً لكل فرد.",
+    "savingLabel": "20-25 لتر/يوم",
+    "impactValue": 300,
+    "priority": 300,
+    "tags": [
+      "دش",
+      "وقت",
+      "توفير"
+    ],
+    "icon": "⏱️"
+  },
+  {
+    "id": "t10",
+    "category": "kitchen",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "easy",
+    "title": "اطبخ الخضار بأقل ماء",
+    "description": "استخدام الطنجرة البخارية أو تقليل كمية ماء السلق يحافظ على الفيتامينات ويوفر المياه.",
+    "savingLabel": "حتى 5 لتر/وجبة",
+    "impactValue": 120,
+    "priority": 120,
+    "tags": [
+      "مطبخ",
+      "طبخ",
+      "خضار"
+    ],
+    "icon": "🥦"
+  },
+  {
+    "id": "t11",
+    "category": "bathroom",
+    "audience": [
+      "family",
+      "apartment"
+    ],
+    "effort": "medium",
+    "title": "ركّب رأس دش موفّر للمياه",
+    "description": "رؤوس الدش الموفرة تعطيك نفس الإحساس باستخدام نصف كمية المياه تقريباً.",
+    "savingLabel": "حتى 50%",
+    "impactValue": 310,
+    "priority": 310,
+    "tags": [
+      "دش",
+      "تركيب",
+      "موفر"
+    ],
+    "icon": "🚿"
+  },
+  {
+    "id": "t12",
+    "category": "garden",
+    "audience": [
+      "family",
+      "villa"
+    ],
+    "effort": "hard",
+    "title": "استخدم نظام الري بالتقطير",
+    "description": "الري بالتقطير يوصل الماء مباشرةً للجذور ويقلل الهدر بنسبة تصل لـ 70%.",
+    "savingLabel": "حتى 70%",
+    "impactValue": 400,
+    "priority": 400,
+    "tags": [
+      "حديقة",
+      "تقطير",
+      "ري ذكي"
+    ],
+    "icon": "💧"
+  }
+]
