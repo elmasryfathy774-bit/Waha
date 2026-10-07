@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وفرها • Waferha</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1E3A8A">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Chatbot FAB -->
+<button id="chatFab" onclick="toggleChat()" title="المساعد الذكي">
+  <span id="chatFabDot"></span>
+  <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<!-- Chatbot Popup -->
+<div id="chatbotPopup">
+  <div class="chatbot-header">
+    <div class="chatbot-header-info">
+      <div class="chatbot-avatar">💧</div>
+      <div>
+        <div class="chatbot-header-name">وفرها المساعد الذكي</div>
+        <div class="chatbot-header-sub">مرحباً! دعني أتعرف عليك</div>
+      </div>
+    </div>
+    <button class="chatbot-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chatbot-msgs" id="chatMsgs"></div>
+  <div class="chatbot-options" id="chatOptions"></div>
+  <div class="chatbot-input-row" id="chatInputRow" style="display:none;">
+    <input class="chatbot-text-input" id="chatTextInput" type="number" placeholder="أدخل عمرك..." min="5" max="100">
+    <button class="chatbot-send-btn" onclick="submitAge()">إرسال</button>
+  </div>
+</div>
+
+<!-- شاشة الدخول -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:4px;">
+      <div style="position:relative;display:inline-flex;" onclick="openVideo()">
+        <div class="video-fab-ring"></div>
+        <div class="auth-logo" style="cursor:pointer;">
+          <svg viewBox="0 0 24 24" style="width:36px;height:36px;stroke:#fff;fill:none;stroke-width:2;">
+            <circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16 10,8" fill="#fff" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="play-hint">▶ شاهد كيف تعمل وفرها</div>
+    </div>
+    <h2 class="auth-title">وفرها • Waferha</h2>
+    <p class="auth-sub">نظام الترشيد والمتابعة الذكي</p>
+
+    <form id="loginForm" style="margin-top:24px;display:flex;flex-direction:column;gap:14px;" onsubmit="performLogin();return false;">
+      <div>
+        <label class="field-label">الاسم بالكامل</label>
+        <div class="field-wrap">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="userNameInput" class="field-input" type="text" placeholder="" style="padding-right:40px;">
+        </div>
+      </div>
+      <div>
+        <label class="field-label">البريد الإلكتروني</label>
+        <div class="field-wrap">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <input id="userEmailInput" class="field-input" type="email" placeholder="example@email.com" style="padding-right:40px;">
+        </div>
+      </div>
+      <button class="btn-primary" id="loginBtn" type="submit">
+        <span>تسجيل الدخول 🚀</span>
+      </button>
+    </form>
+
+    <div class="divider" style="margin:16px 0;">
+      <div class="divider-line"></div>
+      <span class="divider-txt">أو البدء الفوري سريعاً</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <button class="btn-demo" id="demoBtn">الدخول السريع كحساب تجريبي 💧</button>
+  </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="mainDashboard">
+  <div class="mobile-topbar">
+    <div class="mobile-brand">
+      <span class="mobile-brand-icon">💧</span>
+      <div class="mobile-brand-text">
+        <div class="mobile-brand-title">وفرها • Waferha</div>
+        <div class="mobile-brand-sub">تطبيق الترشيد المثالي</div>
+      </div>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="فتح القائمة">
+      <span class="mobile-menu-avatar" id="mobileUserInitial">م</span>
+    </button>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileMenu()"></div>
+  <div class="mobile-quickbar">
+    <button type="button" onclick="switchTab('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      الرئيسية
+    </button>
+    <button type="button" onclick="switchTab('analytics')">
+      <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+      التحليلات
+    </button>
+    <button type="button" onclick="toggleChat()">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      المساعد
+    </button>
+    <button type="button" onclick="triggerAnalyticsJsonUpload()">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>
+      رفع JSON
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <button class="sidebar-close-btn" type="button" onclick="closeMobileMenu()" aria-label="إغلاق القائمة">×</button>
+    <div>
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-icon">💧</span>
+        <div>
+          <div class="sidebar-logo-title">وفرها • Waferha</div>
+          <div class="sidebar-logo-sub">تطبيق الترشيد المثالي</div>
+        </div>
+      </div>
+
+      <div class="user-card" style="margin:16px 0;">
+        <div class="user-avatar" id="userInitial">م</div>
+        <div style="min-width:0;">
+          <div class="user-name" id="profileName">مستخدم</div>
+          <div class="user-email" id="profileEmail">user@waferha.sa</div>
+        </div>
+      </div>
+
+      <nav>
+        <button class="tab-btn active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          لوحة تتبع الاستهلاك
+        </button>
+        <button class="tab-btn" id="btn-tab-analytics" onclick="switchTab('analytics')">
+          <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+          الإحصائيات والرسومات
+        </button>
+        <button class="tab-btn" id="btn-tab-calculator" onclick="switchTab('calculator')">
+          <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+          حاسبة الفاتورة والتوفير
+        </button>
+        <button class="tab-btn" id="btn-tab-tips" onclick="switchTab('tips')">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17H8v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg>
+          مركز النصائح التوعوية
+        </button>
+        <button class="tab-btn" id="btn-tab-feedback" onclick="switchTab('feedback')">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          ملاحظات ومقترحات
+        </button>
+        <button class="tab-btn" id="btn-tab-ads" onclick="switchTab('ads')">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><circle cx="12" cy="14" r="2"/><path d="M12 12v4"/></svg>
+          صانع الإعلانات الذكي
+        </button>
+      </nav>
+    </div>
+
+    <div>
+      <button class="logout-btn" onclick="handleLogout()" style="margin-bottom:8px;">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        تسجيل الخروج
+      </button>
+      <div class="sidebar-footer">وفرها v1.2 © 2026</div>
+    </div>
+  </div>
+
+  <!-- المحتوى -->
+  <div class="main-content">
+
+    <!-- لوحة الاستهلاك -->
+    <div class="view active" id="view-dashboard">
+      <div class="card dash-header">
+        <div>
+          <div class="dash-title">مؤشر الاستهلاك التفاعلي</div>
+          <div class="dash-sub">راقب معدلك اليومي وقم بتحديث سجل المياه ورفع الفواتير بشكل فوري.</div>
+        </div>
+        <div class="dash-header-actions">
+          <div class="live-badge">
+            <svg id="bellIcon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            تنبيهات الاستهلاك
+            <span class="pulse-dot" id="alertPulse"></span>
+          </div>
+        </div>
+      </div>
+
+
+      <div style="text-align:center;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:16px;padding:10px 16px;font-size:13px;font-weight:800;color:#1E3A8A;">إعداد: بسمله حامد فتحي محمد</div>
+
+      <!-- Camera Flow Detection Card -->
+      <div class="camera-card" onclick="openCamera()">
+        <div class="cam-pulse"></div>
+        <div class="camera-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="camera-card-title">📷 قياس استهلاك الدش والحنفية</div>
+        <div class="camera-card-sub">صوّر الدش أو الحنفية ووفرها تحسب الاستهلاك تلقائياً</div>
+        <button class="camera-card-btn">افتح الكاميرا وابدأ القياس</button>
+      </div>
+
+      <!-- Stats Summary Row -->
+      <div class="stats-row">
+        <div class="stat-card blue">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 9 2 12s4.48 10 10 10 10-4.48 10-10C22 9 17.52 2 12 2z"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">استهلاك اليوم</div>
+            <div class="stat-val" id="stat-today">120 <span style="font-size:12px;font-weight:700;color:#64748B;">لتر</span></div>
+            <span class="stat-trend good">↓ أقل من المتوسط</span>
+          </div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">توفير هذا الشهر</div>
+            <div class="stat-val" id="stat-saved">1,230 <span style="font-size:12px;font-weight:700;color:#64748B;">لتر</span></div>
+            <span class="stat-trend good">↑ +14% عن الشهر الماضي</span>
+          </div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon amber">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M12 12v4"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">تكلفة الفاتورة التقديرية</div>
+            <div class="stat-val" id="stat-cost">4.2 <span style="font-size:12px;font-weight:700;color:#64748B;">وحدة</span></div>
+            <span class="stat-trend warn">↑ قريب من الحد</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <!-- Gauge -->
+        <div class="card gauge-card">
+          <div class="live-tag">
+            <span class="live-dot"></span>
+            مباشر • LIVE
+          </div>
+          <div class="gauge-label">مقياس الاستهلاك الحالي</div>
+          <div class="gauge-limit">سقف الاستهلاك: <span id="gaugeLimitText">150</span> لتر</div>
+          <div class="gauge-circle">
+            <div class="water-wave" id="waterLevelWave" style="height:60%;"></div>
+            <div class="gauge-inner">
+              <div class="gauge-val" id="gaugeLitersVal">120</div>
+              <div class="gauge-unit">لتر / يومياً</div>
+              <div class="gauge-pct" id="gaugePercentText">80% من المستهدف</div>
+            </div>
+          </div>
+          <!-- Weekly mini bar chart -->
+          <div class="week-bar-wrap" style="width:100%;padding:0 8px;">
+            <div class="week-bar-title"><span>الأسبوع الحالي</span><span style="color:#3B82F6;">بالليتر</span></div>
+            <div class="week-bars" id="weekBarsContainer">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Log form -->
+        <div class="card">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="section-title">تسجيل استهلاك اليوم</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+            <div>
+              <label class="field-label">حدد اليوم المستهدف</label>
+              <select id="logDaySelector">
+                <option>السبت</option><option>الأحد</option><option>الإثنين</option>
+                <option selected>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">أدخل كمية الاستهلاك الفعلي</label>
+              <div class="input-wrap">
+                <input id="logLitersInput" type="number" placeholder="120" min="5" max="900" style="padding-left:36px;">
+                <span class="input-unit">لتر</span>
+              </div>
+            </div>
+            <button class="btn-save" id="logValueBtn">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              حفظ وتحديث الاستهلاك
+            </button>
+          </div>
+        </div>
+
+        <!-- Bill upload -->
+        <div class="card">
+          <div class="section-head" style="justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span class="section-title">رفع ومسح فاتورة مياه</span>
+            </div>
+            <span class="count-badge" id="billsCountBadge">0 فواتير</span>
+          </div>
+          <div id="scanArea" class="scan-area" style="margin-top:12px;padding:12px 16px;">
+            <div id="scanLoadingState" style="display:none;">
+              <div class="spinner"></div>
+              <p style="font-size:10px;font-weight:800;color:#1E293B;">جارٍ المسح والتحليل...</p>
+            </div>
+            <div id="scanReadyState">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p style="margin-bottom:10px;">اختر صورة الفاتورة</p>
+              <label style="display:inline-block;padding:9px 22px;background:#1E3A8A;color:#fff;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:Almarai,sans-serif;">
+                📎 اختر ملف
+                <input type="file" id="billFileInput" accept="image/*,application/pdf" style="display:none;" onchange="handleBillUpload(this)">
+              </label>
+              <p style="margin-top:8px;"><small>PNG · JPG · PDF مدعومة</small></p>
+            </div>
+          </div>
+          <div id="scannedBillsContainer" style="margin-top:8px;max-height:110px;overflow-y:auto;">
+            <div class="bills-list-empty">لا توجد مستندات حالياً</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert settings -->
+      <div class="card">
+        <div class="section-head">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          <span class="section-title">تخصيص منبه الاستهلاك الشخصي</span>
+        </div>
+        <p style="font-size:12px;color:#64748B;line-height:1.7;margin:12px 0;">تستطيع تغذية النظام بحد استهلاك أقصى مسموح لك باليوم. وعند تجاوزه، يضيء المنبه التنبيهي لمساعدتك في تفادي الانتقال للغرامات المالية المفرطة.</p>
+        <div class="alert-box">
+          <div>
+            <div class="alert-box-label">سقف المنبه اليومي المحدد:</div>
+            <div class="alert-box-val" id="currentLimitDisplay">الحد الأقصى: 150 لتر</div>
+          </div>
+          <div class="alert-row">
+            <input id="alertLimitSetterInput" type="number" min="50" max="600" value="150" style="width:96px;text-align:center;">
+            <button class="btn-update" id="updateLimitBtn">تحديث السقف</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saving Hint Card -->
+      <div id="savingHintCard" style="border-radius:20px;padding:16px 20px;border:1px solid #E2E8F0;font-size:13px;font-weight:700;line-height:1.7;transition:.4s;">
+        <div style="font-size:13px;font-weight:700;color:#64748B;text-align:center;padding:12px 0;">⏳ لم يتم تسجيل استهلاك بعد — أضف فاتورتك أو سجّل يدوياً</div>
+      </div>
+    </div>
+
+    <!-- حاسبة التوفير -->
+    <div class="view" id="view-analytics">
+      <div class="card">
+        <div class="dash-header">
+          <div>
+            <div class="dash-title">الإحصائيات والرسومات</div>
+            <div class="dash-sub">ملخص سريع للاستهلاك، مقارنة أسبوعية، وقراءة أوضح لنمط الاستخدام.</div>
+          </div>
+          <div class="live-badge">
+            <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+            لوحة تحليل
+            <span class="pulse-dot" id="analyticsPulse"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card analytics-toolbar-card">
+        <div class="analytics-toolbar-hero">
+          <div>
+            <div class="analytics-toolbar-kicker">لوحة التحليل</div>
+            <div class="analytics-toolbar-note" id="analyticsContextText">يتم عرض آخر 7 أيام مع مقارنة تلقائية بالفترة السابقة.</div>
+          </div>
+          <div class="analytics-toolbar-actions">
+            <button class="analytics-dialog-btn" type="button" onclick="openAnalyticsDialog()">فتح الإعدادات</button>
+            <button class="analytics-file-btn" type="button" onclick="triggerAnalyticsJsonUpload()">رفع JSON</button>
+            <button class="analytics-file-btn" type="button" onclick="shareAnalyticsReport()">مشاركة PDF</button>
+            <button class="analytics-file-btn" type="button" onclick="downloadAnalyticsReport()">تنزيل PDF</button>
+            <input id="analyticsJsonInput" class="analytics-file-input" type="file" accept=".json,application/json" onchange="handleAnalyticsDataUpload(this)">
+          </div>
+        </div>
+        <div class="analytics-toolbar-summary">
+          <div class="analytics-summary-chip">
+            <span>الفترة</span>
+            <strong id="analyticsRangeLabel">آخر 7 أيام</strong>
+          </div>
+          <div class="analytics-summary-chip">
+            <span>المقارنة</span>
+            <strong id="analyticsCompareLabel">جاهز</strong>
+          </div>
+          <div class="analytics-summary-chip">
+            <span>البيانات</span>
+            <strong id="analyticsDataSourceLabel">تلقائي</strong>
+          </div>
+        </div>
+        <div class="analytics-dropzone" id="analyticsDropZone" role="button" tabindex="0" aria-label="رفع ملف JSON بالسحب أو النقر">
+          <div class="analytics-dropzone-icon">⇪</div>
+          <div>
+            <div class="analytics-dropzone-title">اسحب ملف JSON هنا أو اضغط للرفع</div>
+            <div class="analytics-dropzone-sub">تقدر ترفع بياناتك بصيغة JSON أو تجرّب إعادة القراءة من نفس النافذة.</div>
+          </div>
+        </div>
+      </div>
+
+      <dialog id="analyticsDialog" class="analytics-dialog">
+        <form method="dialog" class="analytics-dialog-panel">
+          <div class="analytics-dialog-head">
+            <div>
+              <div class="analytics-dialog-title">إعدادات التحليل</div>
+              <div class="analytics-dialog-sub">كل الفلاتر اللي تحتاجها في مكان واحد</div>
+            </div>
+            <button class="analytics-dialog-close" type="button" onclick="closeAnalyticsDialog()">✕</button>
+          </div>
+
+          <div class="analytics-dialog-grid">
+            <div class="analytics-group">
+              <span class="analytics-group-title">الفترة</span>
+              <select id="analyticsPeriodSelect" onchange="setAnalyticsPeriod(this.value)">
+                <option value="week">آخر 7 أيام</option>
+                <option value="month">آخر 30 يوم</option>
+                <option value="threeMonths">آخر 3 شهور</option>
+                <option value="year">آخر 12 شهر</option>
+                <option value="all">كل الوقت</option>
+              </select>
+            </div>
+            <div class="analytics-group">
+              <span class="analytics-group-title">نوع الرسم</span>
+              <select id="analyticsChartTypeSelect" onchange="setAnalyticsChartType(this.value)">
+                <option value="line">خطي</option>
+                <option value="area" selected>مظلل</option>
+                <option value="bar">أعمدة</option>
+              </select>
+            </div>
+            <div class="analytics-group">
+              <span class="analytics-group-title">مصدر البيانات</span>
+              <select id="analyticsDataSourceSelect" onchange="setAnalyticsDataSource(this.value)">
+                <option value="auto">تلقائي</option>
+                <option value="app">بيانات التطبيق</option>
+                <option value="file">الملف المرفوع</option>
+              </select>
+              <div class="analytics-toolbar-note" id="analyticsDataSourceHint">تلقائياً نعرض بيانات التطبيق المحلية، ولو رفعت JSON تقدر تعرضها بدلها.</div>
+            </div>
+            <div class="analytics-group">
+              <span class="analytics-group-title">المقارنة</span>
+              <select id="analyticsCompareModeSelect" onchange="setAnalyticsCompareMode(this.value)">
+                <option value="previous">الفترة السابقة</option>
+                <option value="custom">مقارنة مخصصة</option>
+              </select>
+              <div class="analytics-compare-range" id="analyticsCompareRangeWrap" style="display:none;">
+                <input type="date" id="analyticsCompareStart" aria-label="بداية المقارنة" onchange="setAnalyticsCompareRange('start', this.value)">
+                <input type="date" id="analyticsCompareEnd" aria-label="نهاية المقارنة" onchange="setAnalyticsCompareRange('end', this.value)">
+              </div>
+              <div class="analytics-toolbar-note" id="analyticsCompareHint">المقارنة الحالية محسوبة تلقائياً على الفترة السابقة.</div>
+            </div>
+          </div>
+
+          <div class="analytics-dialog-footer">
+            <div class="analytics-toolbar-note">تقدر تقفل النافذة بعد ما تختار، والرسم هيتحدث مباشرة.</div>
+            <div class="analytics-actions">
+              <button class="analytics-dialog-btn secondary" type="button" onclick="resetAnalyticsDataSource()">إعادة ضبط</button>
+              <button class="analytics-dialog-btn secondary" type="button" onclick="closeAnalyticsDialog()">إغلاق</button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+
+      <div class="grid-3">
+        <div class="stat-card blue">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 9 2 12s4.48 10 10 10 10-4.48 10-10C22 9 17.52 2 12 2z"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">إجمالي اليوم</div>
+            <div class="stat-val" id="analytics-today">— <span style="font-size:12px;font-weight:700;color:#64748B;">لتر</span></div>
+            <span class="stat-trend good" id="analytics-today-trend">محدّث تلقائيًا</span>
+          </div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">متوسط الأسبوع</div>
+            <div class="stat-val" id="analytics-weeklyAvg">— <span style="font-size:12px;font-weight:700;color:#64748B;">لتر</span></div>
+            <span class="stat-trend good" id="analytics-week-trend">أحدث 7 أيام</span>
+          </div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon amber">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M12 12v4"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">إجمالي الشهر</div>
+            <div class="stat-val" id="analytics-monthlyTotal">— <span style="font-size:12px;font-weight:700;color:#64748B;">لتر</span></div>
+            <span class="stat-trend warn" id="analytics-month-trend">متابعة شهرية</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+            <span class="section-title" id="analyticsMainTitle">الرسم الرئيسي</span>
+            <span class="count-badge" id="analyticsRangeLabel">آخر 7 أيام</span>
+          </div>
+          <div id="analyticsMainChart" class="chart-host" style="margin-top:14px;"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+            <span class="section-title" id="analyticsCompareTitle">مقارنة الفترة السابقة</span>
+            <span class="count-badge" id="analyticsCompareLabel">جاهز</span>
+          </div>
+          <div id="analyticsCompareChart" class="chart-host" style="margin-top:14px;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="7" rx="1"/><rect x="12" y="9" width="3" height="10" rx="1"/><rect x="17" y="6" width="3" height="13" rx="1"/></svg>
+            <span class="section-title">قراءة سريعة</span>
+          </div>
+          <span class="count-badge" id="analyticsTopDay">—</span>
+        </div>
+        <div class="info-box" style="margin-top:14px;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div id="analyticsSummaryText">سيتم عرض ملخص تلقائي عند تحميل البيانات.</div>
+        </div>
+      </div>
+
+      <div class="grid-2 analytics-insight-grid">
+        <div class="card analytics-insight-card" id="analyticsAlertCard">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span class="section-title">تنبيه ذكي</span>
+          </div>
+          <div class="insight-main" id="analyticsAlertText">سأحسب التنبيه بعد قراءة البيانات.</div>
+          <div class="insight-meta" id="analyticsAlertMeta"></div>
+        </div>
+        <div class="card analytics-insight-card" id="analyticsForecastCard">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+            <span class="section-title">توقع 7 أيام</span>
+          </div>
+          <div class="forecast-strip" id="analyticsForecastStrip"></div>
+        </div>
+      </div>
+
+      <div class="grid-2 analytics-insight-grid">
+        <div class="card analytics-insight-card" id="analyticsHistoryCard">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3 8a9 9 0 1 0 3-3"/><path d="M12 7v5l4 2"/></svg>
+            <span class="section-title">آخر السجلات</span>
+          </div>
+          <div class="history-list" id="analyticsHistoryList"></div>
+        </div>
+        <div class="card analytics-insight-card" id="analyticsBadgeCard">
+          <div class="section-head" style="justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24"><path d="M12 2l2.6 5.3 5.9.9-4.2 4.1 1 5.9-5.3-2.8-5.3 2.8 1-5.9-4.2-4.1 5.9-.9z"/></svg>
+              <span class="section-title">إنجازات</span>
+            </div>
+            <div class="analytics-actions">
+              <button class="analytics-dialog-btn secondary" type="button" onclick="shareAnalyticsReport()">مشاركة PDF</button>
+              <button class="analytics-dialog-btn secondary" type="button" onclick="downloadAnalyticsReport()">تنزيل PDF</button>
+            </div>
+          </div>
+          <div class="badge-row" id="analyticsBadgeRow"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-calculator">
+      <div class="card">
+        <div class="calc-header">
+          <div class="calc-icon">
+            <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+          </div>
+          <div>
+            <div style="font-size:17px;font-weight:700;color:#1E293B;">حاسبة التوفير والتكلفة التقديرية للفاتورة</div>
+            <div style="font-size:12px;color:#64748B;">اكتشف مكامن الهدر المالي وتحسس حجم التوفير المتاح لعائلتك.</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:16px;">
+          <div>
+            <div class="range-row">
+              <div class="range-label"><span>عدد أفراد الأسرة</span><span class="range-val" id="val-familyNum">3 أفراد</span></div>
+              <input type="range" id="input-familyNum" min="1" max="10" value="3" oninput="calculateSavings()">
+            </div>
+            <div class="range-row">
+              <div class="range-label"><span>معدل الاستهلاك الفعلي للفرد باليوم</span><span class="range-val" id="val-personUsage">120 لتر</span></div>
+              <input type="range" id="input-personUsage" min="50" max="350" value="120" oninput="calculateSavings()">
+            </div>
+            <div class="range-row">
+              <div class="range-label"><span>متوسط وقت دش الاستحمام</span><span class="range-val" id="val-showerTime">8 دقائق</span></div>
+              <input type="range" id="input-showerTime" min="2" max="25" value="8" oninput="calculateSavings()">
+            </div>
+            <div class="range-row">
+              <div class="range-label"><span>تعرفة المياه لكل متر مكعب</span><span class="range-val" id="val-tariffRate">1.5 وحدة</span></div>
+              <input type="range" id="input-tariffRate" min="0.1" max="5" value="1.5" step="0.1" oninput="calculateSavings()">
+            </div>
+            <div class="info-box">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              الحسابات تقريبية ومصممة لترشيد الاستهلاك المنزلي لتفادي الوصول للشرائح العالية.
+            </div>
+          </div>
+
+          <div class="results-panel">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#1E293B;margin-bottom:12px;">مؤشرات الاستهلاك الحالية</div>
+              <div class="results-grid">
+                <div class="result-card">
+                  <span class="result-label">الاستهلاك الشهري</span>
+                  <span class="result-val" id="res-monthlyLiters">10,800</span>
+                  <span class="result-unit"> لتر</span>
+                </div>
+                <div class="result-card">
+                  <span class="result-label">الفاتورة التقديرية</span>
+                  <span class="result-val blue" id="res-monthlyCost">16.2</span>
+                  <span class="result-unit"> وحدة</span>
+                </div>
+              </div>
+            </div>
+            <div class="savings-card">
+              <div class="savings-bg">💧</div>
+              <div class="savings-inner">
+                <div class="savings-tag">قوة التوفير القصوى المتاحة</div>
+                <div class="savings-num"><span id="res-savedWater">3,240</span> <span style="font-size:13px;font-weight:400;">لتر/شهر</span></div>
+                <div class="savings-desc">ما يعادل توفير <span id="res-savedMoney" style="font-weight:800;">4.9</span> وحدة مالية من فاتورتك.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- النصائح -->
+    <div class="view" id="view-tips">
+
+      <!-- Hero -->
+      <div class="tips-hero">
+        <div class="tips-hero-bg">💧</div>
+        <div class="tips-hero-content">
+          <div class="tips-hero-kicker">مركز التوعية</div>
+          <div class="tips-hero-title">
+            <svg viewBox="0 0 24 24"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg>
+            مركز التوعية والترشيد الذكي
+          </div>
+          <div class="tips-hero-sub">التزم بالنصائح التالية لملاحقة مكامن التقنين الفعلي في فاتورة بيتك. كل نصيحة = توفير حقيقي.</div>
+          <div class="tips-hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-val" id="heroTotalCount">—</div>
+              <div class="hero-stat-lbl">نصيحة</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-val" id="heroCategCount">—</div>
+              <div class="hero-stat-lbl">فئة</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-val" id="heroMaxSaving">—</div>
+              <div class="hero-stat-lbl">أعلى توفير</div>
+            </div>
+          </div>
+        </div>
+        <div class="tips-hero-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17H8v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg>
+        </div>
+      </div>
+
+      <!-- لوحة الإعلانات -->
+      <div class="ad-board">
+        <div class="ad-board-header">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#3B82F6;fill:none;stroke-width:2;"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          <span>حملات التوعية</span>
+          <div class="ad-dots" id="adDots"></div>
+        </div>
+        <div class="ad-track-wrap">
+          <div class="ad-track" id="adTrack"></div>
+        </div>
+      </div>
+
+      <!-- Tips Panel -->
+      <div class="tips-panel">
+
+        <!-- Toolbar -->
+        <div class="tips-toolbar">
+          <div class="tips-search-shell">
+            <svg class="tips-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="tipsSearchInput" class="tips-search" placeholder="ابحث في النصائح...">
+            <button class="tips-filter-btn" id="filterBtn" onclick="openDialog()" aria-label="فتح الفلاتر">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16l-6 7v5l-4 2v-7z"/></svg>
+              <span class="filter-active-dot" id="filterActiveDot"></span>
+            </button>
+          </div>
+          <button class="tips-share-btn" onclick="shareTips()">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;display:inline;vertical-align:middle;margin-left:6px;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            مشاركة النصائح
+          </button>
+        </div>
+
+        <!-- Active filters row -->
+        <div class="active-filters" id="activeFiltersRow" style="display:none;"></div>
+
+        <!-- Meta row -->
+        <div class="tips-meta-row">
+          <span class="count-badge" id="tipsCountBadge">— نصيحة</span>
+          <span class="count-badge" id="tipsCategoryBadge">كل الفئات</span>
+          <span class="count-badge" id="tipsImpactBadge">—</span>
+        </div>
+
+        <!-- Grid -->
+        <div id="tipsList" class="tips-grid">
+          <div class="tips-loading" style="grid-column:1/-1;">
+            <div class="spinner"></div>
+            جارٍ تحميل مكتبة النصائح...
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="tipsEmptyState" class="tips-empty" style="display:none;">
+          <div class="tips-empty-icon">🔍</div>
+          <div style="font-weight:800;color:#1E293B;margin-bottom:6px;">لا توجد نصائح مطابقة</div>
+          <div>جرّب تغيير كلمة البحث أو إعادة ضبط الفلاتر</div>
+        </div>
+
+      </div>
+
+      <!-- Filter Dialog -->
+      <div class="dialog-backdrop" id="dialogBackdrop" onclick="handleBackdropClick(event)">
+        <div class="dialog" id="filterDialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+          <div class="dialog-handle"></div>
+          <div class="dialog-header">
+            <div>
+              <div class="dialog-kicker">فلترة متقدمة</div>
+              <div class="dialog-title" id="dialogTitle">ابحث وفلتر النصائح</div>
+            </div>
+            <button class="dialog-close" onclick="closeDialog()" aria-label="إغلاق">✕</button>
+          </div>
+          <div class="dialog-section">
+            <div class="dialog-section-label">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              بحث نصي
+            </div>
+            <div class="dialog-search-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" id="dialogSearch" class="dialog-search" placeholder="اكتب كلمة أو جملة...">
+            </div>
+          </div>
+          <div class="dialog-divider"></div>
+          <div class="dialog-section">
+            <div class="dialog-section-label">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              الفئة
+            </div>
+            <div class="chip-group" id="categoryChips"></div>
+          </div>
+          <div class="dialog-divider"></div>
+          <div class="dialog-section">
+            <div class="dialog-section-label">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              الجمهور
+            </div>
+            <div class="chip-group" id="audienceChips"></div>
+          </div>
+          <div class="dialog-divider"></div>
+          <div class="dialog-section">
+            <div class="dialog-section-label">
+              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              مستوى الجهد
+            </div>
+            <div class="chip-group" id="effortChips">
+              <button class="chip selected" data-effort="all">الكل</button>
+              <button class="chip effort-easy" data-effort="easy">🟢 سهل</button>
+              <button class="chip effort-medium" data-effort="medium">🟡 متوسط</button>
+              <button class="chip effort-advanced" data-effort="advanced">🔴 متقدم</button>
+            </div>
+          </div>
+          <div class="dialog-divider"></div>
+          <div class="dialog-section">
+            <div class="dialog-section-label">
+              <svg viewBox="0 0 24 24"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+              الترتيب
+            </div>
+            <select id="dialogSort" class="dialog-select">
+              <option value="priority">الأفضل تأثيرًا</option>
+              <option value="saving">أعلى توفير</option>
+              <option value="effort">أقل جهد</option>
+              <option value="alpha">أبجديًا</option>
+            </select>
+          </div>
+          <div class="dialog-divider"></div>
+          <div class="dialog-actions">
+            <button class="btn-apply" onclick="applyFilters()">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;display:inline;vertical-align:middle;margin-left:6px;"><polyline points="20 6 9 17 4 12"/></svg>
+              تطبيق الفلاتر
+            </button>
+            <button class="btn-reset" onclick="resetFilters()">
+              <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.57"/></svg>
+              إعادة الضبط
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+<div class="view" id="view-feedback">
+      <div class="feedback-grid">
+        <div class="card">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="section-title">تقديم مقترح أو بلاغ</span>
+          </div>
+          <div class="feedback-form" style="margin-top:16px;">
+            <div>
+              <label class="field-label">تصنيف التبليغ</label>
+              <select id="feedbackType">
+                <option value="suggestion">اقتراح ترشيد جديد</option>
+                <option value="bug">مشكلة في قراءة العداد</option>
+                <option value="other">تساؤلات واستفسار عام</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">نص الملاحظة بالتفصيل</label>
+              <textarea id="feedbackMessage" rows="4" placeholder="أكتب اقتراحك أو المشكلة هنا..."></textarea>
+            </div>
+            <button class="btn-send" id="submitFeedbackBtn">
+              <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
+              إرسال التقرير
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid #E2E8F0;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg style="width:16px;height:16px;stroke:#3B82F6;fill:none;stroke-width:2;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span style="font-size:13px;font-weight:800;color:#1E293B;">مقترحات المستخدمين</span>
+            </div>
+            <span class="count-badge" id="feedbackCountBadge">1 سجلات</span>
+          </div>
+          <div id="feedbackList" style="max-height:400px;overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- صانع الإعلانات الذكي -->
+    <div class="view" id="view-ads">
+
+      <!-- Hero -->
+      <div style="background:linear-gradient(135deg,#1E3A8A,#2563EB);border-radius:32px;padding:28px 32px;color:#fff;position:relative;overflow:hidden;">
+        <div style="position:absolute;bottom:-20px;left:-20px;font-size:140px;opacity:.07;pointer-events:none;line-height:1;">📢</div>
+        <div style="position:relative;z-index:1;">
+          <div style="font-size:19px;font-weight:900;margin-bottom:6px;">صانع الإعلانات الذكي 📢</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;max-width:480px;">اكتب فكرتك وحدّد جمهورك — وفرها تصمّم لك إعلان توعوي جاهز للنشر في ثوانٍ.</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <!-- Form -->
+        <div class="card" style="display:flex;flex-direction:column;gap:16px;">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span class="section-title">بيانات الإعلان</span>
+          </div>
+
+          <div>
+            <label class="field-label">الجمهور المستهدف</label>
+            <select id="adAudience">
+              <option value="ربات البيوت في مصر">ربات البيوت</option>
+              <option value="الشباب والطلاب">الشباب والطلاب</option>
+              <option value="أصحاب المحلات والمشاريع الصغيرة">أصحاب المحلات والمشاريع</option>
+              <option value="سكان العمارات والمجمعات السكنية">سكان العمارات</option>
+              <option value="الأسر الكبيرة">الأسر الكبيرة</option>
+              <option value="المزارعين">المزارعين</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="field-label">نبرة الإعلان</label>
+            <select id="adTone">
+              <option value="توعوي وعاطفي">توعوي وعاطفي 💙</option>
+              <option value="عملي ومباشر">عملي ومباشر ✅</option>
+              <option value="تحفيزي وحماسي">تحفيزي وحماسي 🔥</option>
+              <option value="خفيف ومرح">خفيف ومرح 😄</option>
+              <option value="رسمي واحترافي">رسمي واحترافي 🎯</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="field-label">رسالتك الرئيسية (اكتب فكرتك بحرية)</label>
+            <textarea id="adMessage" rows="4" placeholder="مثال: عايز أوعّي الناس إن المياه بتتكلف كتير وإن في طرق سهلة توفّر منها كل شهر..."></textarea>
+          </div>
+
+          <div>
+            <label class="field-label">مكان النشر</label>
+            <select id="adPlatform">
+              <option value="فيسبوك">فيسبوك</option>
+              <option value="واتساب">واتساب</option>
+              <option value="تيك توك">تيك توك</option>
+              <option value="إنستجرام">إنستجرام</option>
+              <option value="لافتة إعلانية">لافتة إعلانية</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" id="generateAdBtn" style="margin-top:4px;">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg>
+            ولّد الإعلان الآن
+          </button>
+        </div>
+
+        <!-- Output -->
+        <div class="card" id="adOutputCard" style="display:flex;flex-direction:column;gap:16px;min-height:320px;">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+            <span class="section-title">الإعلان الجاهز</span>
+          </div>
+          <div id="adOutputBody" style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;color:#94A3B8;font-size:13px;padding:32px 0;">
+              <div style="font-size:40px;margin-bottom:12px;">📢</div>
+              <div style="font-weight:700;">إملأ البيانات على اليسار<br>وإعلانك هيظهر هنا</div>
+            </div>
+          </div>
+          <button id="copyAdBtn" style="display:none;width:100%;padding:10px;border:1px solid #bfdbfe;background:#EFF6FF;color:#1E3A8A;font-size:12px;font-weight:800;border-radius:12px;cursor:pointer;" onclick="copyAd()">
+            📋 نسخ الإعلان
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Camera Input (hidden) -->
+<input type="file" id="camFileInput" accept="image/*" capture="environment" style="display:none;" onchange="handleCamFile(this)">
+
+<!-- Camera Analysis Modal -->
+<div id="cameraModal">
+  <canvas id="camCanvas" style="display:none;"></canvas>
+  <div style="position:relative;width:100%;height:100%;display:flex;flex-direction:column;">
+    <!-- Top bar -->
+    <div style="background:linear-gradient(rgba(0,0,0,.7),transparent);padding:20px 16px 32px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="color:#fff;font-size:15px;font-weight:900;">📷 تحليل الدش والحنفية</div>
+      <button class="cam-close-btn" onclick="closeCamera()">✕</button>
+    </div>
+
+    <!-- Preview + Result -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;gap:12px;overflow-y:auto;">
+      <div id="camPreviewWrap" style="width:100%;max-width:360px;border-radius:20px;overflow:hidden;border:3px solid #3B82F6;background:#111;max-height:200px;display:flex;align-items:center;justify-content:center;">
+        <div style="color:#94A3B8;font-size:13px;text-align:center;padding:40px 20px;">
+          <div style="font-size:48px;margin-bottom:12px;">📷</div>
+          <div>صوّرت صورة ستظهر هنا للتحليل</div>
+        </div>
+      </div>
+
+      <div id="camResult" style="width:100%;max-width:360px;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.5);border-radius:16px;padding:14px 16px;color:#fff;font-size:13px;font-weight:700;text-align:center;min-height:60px;overflow:visible;">
+        📸 اضغط الزر أدناه لتصوير الدش أو الحنفية
+      </div>
+
+      <div id="camTimer" style="color:#60a5fa;font-size:13px;font-weight:700;"></div>
+
+      <div style="display:flex;gap:12px;">
+        <button onclick="document.getElementById('camFileInput').click()" style="background:#3B82F6;border:none;color:#fff;padding:14px 28px;border-radius:99px;font-size:14px;font-weight:800;cursor:pointer;font-family:Almarai,sans-serif;">
+          📷 التقط صورة
+        </button>
+        <button id="camAddBtn" onclick="confirmCamUsage()" style="display:none;background:#10b981;border:none;color:#fff;padding:14px 28px;border-radius:99px;font-size:14px;font-weight:800;cursor:pointer;font-family:Almarai,sans-serif;">
+          ✅ أضف للاستهلاك
+        </button>
+      </div>
+
+      <!-- Duration input -->
+      <div id="camDurationWrap" style="display:none;width:100%;max-width:360px;background:rgba(255,255,255,.08);border-radius:16px;padding:16px;text-align:center;">
+        <div style="color:#fff;font-size:13px;font-weight:700;margin-bottom:12px;">⏱ كم دقيقة كان الاستحمام/الحنفية شغالة؟</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+          <button onclick="changeDuration(-1)" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;">−</button>
+          <span id="camDurationVal" style="color:#fff;font-size:24px;font-weight:900;min-width:60px;">5</span>
+          <span style="color:#94A3B8;font-size:13px;">دقيقة</span>
+          <button onclick="changeDuration(1)" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
